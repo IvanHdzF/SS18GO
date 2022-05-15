@@ -179,6 +179,5 @@ func OptnRun(optimize bool) {
 		fmt.Printf("Saved to results.xlsx!\n")
 
 	}
-	fmt.Println("\nPress the Enter Key to close program!")
-	fmt.Scanln()
+
 }
