@@ -12,9 +12,9 @@ func main() {
 	// New app
 	a := app.New()
 	// New Window & title
-	w := a.NewWindow("Resize any widget")
+	w := a.NewWindow("MFS")
 	//Resize main/parent window
-	w.Resize(fyne.NewSize(400, 400))
+	w.Resize(fyne.NewSize(600, 300))
 	// 1st Widget Entry
 	entry := widget.NewEntry()
 	entry.SetPlaceHolder("Enter your name")
@@ -29,7 +29,7 @@ func main() {
 	entry_address.Resize(fyne.NewSize(250, 30)) // my widget size
 	entry_address.Move(fyne.NewPos(40, 150))    // position of widget
 	// button
-	btn_submit := widget.NewButton("Submit", nil)
+	btn_submit := widget.NewButton("Submit", func() { OptnRun(false) })
 	btn_submit.Resize(fyne.NewSize(150, 30)) // my widget size
 	btn_submit.Move(fyne.NewPos(40, 200))    // position of widget
 	w.SetContent(

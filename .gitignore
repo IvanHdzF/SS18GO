@@ -2,6 +2,11 @@
 .temp/
 .libs/
 
+#Excel files
+*.xlsx
+
+
+
 # Object files, generates by linker
 *.lo
 *.la
