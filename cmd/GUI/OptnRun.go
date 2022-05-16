@@ -109,7 +109,7 @@ func selectFiles() []string {
 		DefaultExtension:        "txt",
 	})
 	if err == cfd.ErrorCancelled {
-		log.Fatal("Dialog was cancelled by the user.")
+		log.Printf("Dialog was cancelled by the user.")
 	} else if err != nil {
 		log.Fatal(err)
 	}
@@ -122,9 +122,13 @@ func (d dpsPerChar) String() string { //Format the struct to a pretty form
 	return fmt.Sprintf("%s:\n%.2f", d.Char, d.Dps)
 }
 
-func OptnRun(optimize bool) {
+func OptnRunFunc(optimize bool, replace bool) {
 	filepaths := selectFiles()
-	log.Printf("Chosen file(s): %s\n", filepaths)
+	if len(filepaths) == 0 {
+		return
+
+	}
+	log.Printf("Chosen file(s): %v\n", filepaths)
 
 	s1 := dataframe.NewSeriesString("File name", nil)
 	s2 := dataframe.NewSeriesFloat64("Total DPS", nil)
@@ -142,17 +146,23 @@ func OptnRun(optimize bool) {
 		var configpath simulator.Options
 		configpath.ConfigPath = filepath
 		configpath.GZIPResult = true //saves .gz
-		configpath.ResultSaveToPath = filepath
+
 		filenamepath := strings.Split(configpath.ResultSaveToPath, "\\")
 		filename := filenamepath[len(filenamepath)-1]
 
 		if optimize {
 			log.Printf("Optimizing: %s ...", filepath)
+			if replace {
+				configpath.ResultSaveToPath = filepath
+			} else {
+				configpath.ResultSaveToPath = (strings.Replace(filepath, ".txt", "", -1)) + "_Optimized.txt"
+			}
+			fmt.Printf("\nSaving to %v\n", configpath.ResultSaveToPath)
 			substatoptimizer.RunSubstatOptim(configpath, false, "")
 		}
 
-		log.Printf("Simulating: %s ...", filepath)
-		configpath.ResultSaveToPath = strings.Replace(filepath, ".txt", "", -1)
+		log.Printf("Simulating: %s ...", configpath.ResultSaveToPath)
+		configpath.ResultSaveToPath = strings.Replace(configpath.ResultSaveToPath, ".txt", "", -1)
 		dpsTotal, sd, chars, dpsChar := parseConfig(configpath) //Calls the sim to run
 		fmt.Printf("Done!\n")
 
